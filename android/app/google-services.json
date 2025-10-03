@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "930070024045",
+    "project_id": "personal-focus-app",
+    "storage_bucket": "personal-focus-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930070024045:android:ad2e4276f92b5012f1d464",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6DJrKFLUQYjHoDzv6ucwl4aHFrU125TE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
