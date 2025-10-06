@@ -1,6 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/settings_page.dart';
 import 'package:flutter_application_1/timer_model.dart';
@@ -12,7 +14,11 @@ import 'more_icons_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await initNotifications();
 
   if (Platform.isWindows || Platform.isLinux) {

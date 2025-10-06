@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
 final FlutterLocalNotificationsPlugin notificationPlugin = FlutterLocalNotificationsPlugin();
@@ -53,6 +54,8 @@ class TimerModel extends ChangeNotifier{
   double get totalAmountOfMinutes => (timerFocusMinutes * amountOfRounds) + (timerBreakMinutes * (amountOfRounds - 1)) + timerLongBreakMinutes;
 
   double get progress => secondsLeft / (startMinutes * 60);
+
+  final FirebaseFirestore db = FirebaseFirestore.instance;
 
   final TextStyle whiteTextStyle = TextStyle(
     fontSize: 14,
