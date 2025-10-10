@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_application_1/daily_focus_repository.dart'; 
+import 'package:flutter_application_1/focus_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
@@ -39,6 +41,7 @@ class TimerModel extends ChangeNotifier{
   Timer? timer;
   
   int state = 0;  // 0 - Focus, 1 - Short Break, 2 - Long Break
+  String tag = 'Study';
 
   static int startMinutes = 25;
   int secondsLeft = startMinutes * 60;
@@ -51,11 +54,22 @@ class TimerModel extends ChangeNotifier{
   double timerBreakMinutes = 5;
   double timerLongBreakMinutes = 20;
 
-  double get totalAmountOfMinutes => (timerFocusMinutes * amountOfRounds) + (timerBreakMinutes * (amountOfRounds - 1)) + timerLongBreakMinutes;
-
+  double get totalAmountOfMinutes => calculateTotalMinutes();
+  int secondsSpendSoFar = 0;
   double get progress => secondsLeft / (startMinutes * 60);
 
+  String _statusMessage = 'No sessions loaded yet.';
+  String get statusMessage => _statusMessage;
+
   final FirebaseFirestore db = FirebaseFirestore.instance;
+
+  late final DailyFocusRepository dailyFocusRepository;
+  TimerModel() {
+    dailyFocusRepository = DailyFocusRepository(db);
+  }
+
+  List<FocusSession> _todaySessions = [];
+  StreamSubscription<List<FocusSession>>? _sessionSubscription;
 
   final TextStyle whiteTextStyle = TextStyle(
     fontSize: 14,
@@ -71,6 +85,42 @@ class TimerModel extends ChangeNotifier{
       )
     ],
   );
+
+  void listenToTodaySessions() {
+    // Access the global dailyFocusRepository instance
+    _sessionSubscription = dailyFocusRepository.getTodayFocusSessions().listen((sessions) {
+      _todaySessions = sessions;
+      _statusMessage = 'Loaded ${sessions.length} sessions for today.';
+      notifyListeners();  
+    }, onError: (error) {
+      _statusMessage = 'Error loading sessions: $error';
+      notifyListeners();
+    });
+  }
+
+  Future<void> addFocusSession(int secondsSpend, String tag) async {
+    try {
+      await dailyFocusRepository.addFocusSessionForToday(secondsSpend, tag);
+      _statusMessage = 'Added session of $secondsSpend seconds with tag "$tag".';
+      notifyListeners();
+    } catch (e) {
+      _statusMessage = 'Error adding session: $e';
+      notifyListeners();
+    }
+  }
+
+  double calculateTotalMinutes(){
+    double result = 0;
+    if (amountOfRounds > 0) {
+      result += (amountOfRounds - 1) * (timerFocusMinutes + timerBreakMinutes);
+      result += timerFocusMinutes; // Last focus session without break
+      result += timerLongBreakMinutes; // Add long break at the end
+    }
+    else {
+      result += timerFocusMinutes; // Just a single focus session
+    }
+    return result;
+  }
 
   Color interactableColor = const Color.fromARGB(255, 28, 119, 255);
   final ButtonStyle focusButtons = ElevatedButton.styleFrom(
@@ -88,6 +138,7 @@ class TimerModel extends ChangeNotifier{
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsLeft > 0) {
         secondsLeft--;
+        secondsSpendSoFar++;
         notifyListeners();
       } else {
         if (currentRound != amountOfRounds) {
@@ -98,10 +149,20 @@ class TimerModel extends ChangeNotifier{
             timeForFocus();
           }
         }
-        else {
-          if (state == 3) {
+        else if (amountOfRounds == 1 && currentRound == 1) {
+            addFocusSession(secondsSpendSoFar, tag);
             currentRound = 1;
             secondsLeft = timerFocusMinutes.round() * 60;
+            secondsSpendSoFar = 0;
+            showNotification("Focus session completed!");
+        }
+        else {
+          if (state == 3) {
+            addFocusSession(secondsSpendSoFar, tag);
+            currentRound = 1;
+            secondsLeft = timerFocusMinutes.round() * 60;
+            secondsSpendSoFar = 0;
+            showNotification("Focus session completed!");
           }
           else {
             timeForBreak(false);

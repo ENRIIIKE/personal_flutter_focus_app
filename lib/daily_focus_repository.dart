@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart'; // Add uuid package to pubspec.yaml for unique IDs
 import 'package:flutter_application_1/focus_session.dart';
@@ -21,11 +23,8 @@ class DailyFocusRepository {
   }
 
   Future<void> addFocusSessionForToday(int secondsSpend, String tag) async {
-    print("[DEBUG] addFocusSessionForToday: Starting function.");
     final String todayDocId = _getTodayDocumentId();
-    print("[DEBUG] addFocusSessionForToday: todayDocId: $todayDocId");
     final DocumentReference dailyDocRef = _firestore.collection('daily_focus_data').doc(todayDocId);
-    print("[DEBUG] addFocusSessionForToday: dailyDocRef created.");
 
     // Create the new session data
     final FocusSession newSession = FocusSession(
@@ -35,52 +34,17 @@ class DailyFocusRepository {
       startTime: DateTime.now(),
     );
     final Map<String, dynamic> sessionData = newSession.toFirestore();
-    print("[DEBUG] addFocusSessionForToday: sessionData prepared: $sessionData");
 
     try {
-      print("[DEBUG] addFocusSessionForToday: Attempting direct set (no transaction)...");
       await dailyDocRef.set(
         {
-          'date': _getStartOfDayTimestamp(),
+          //'date': _getStartOfDayTimestamp(),
           'totalSecondsForDay': secondsSpend,
           'sessions': FieldValue.arrayUnion([sessionData]), // Use arrayUnion to add to array
         },
         SetOptions(merge: true), // Use merge to avoid overwriting existing data
       );
-      print("[DEBUG] addFocusSessionForToday: Direct set completed successfully.");
-
-      /*
-      print("[DEBUG] addFocusSessionForToday: Running transaction...");
-      await _firestore.runTransaction((transaction) async {
-        print("[DEBUG] addFocusSessionForToday: Inside transaction. Getting daySnapshot...");
-        final DocumentSnapshot daySnapshot = await transaction.get(dailyDocRef);
-        print("[DEBUG] addFocusSessionForToday: daySnapshot exists: ${daySnapshot.exists}");
-
-        if (!daySnapshot.exists) {
-          print("[DEBUG] addFocusSessionForToday: Document doesn't exist. Setting new document.");
-          // Day document does not exist, create it
-          transaction.set(dailyDocRef, {
-            'date': _getStartOfDayTimestamp(),
-            'totalSecondsForDay': secondsSpend,
-            'sessions': [sessionData], // Start with the first session
-          });
-          print("[DEBUG] addFocusSessionForToday: Set operation performed.");
-        } else {
-          // Day document exists, update it
-          // You can retrieve existing data if needed, but for arrayUnion and increment, it's not always required
-          print("[DEBUG] addFocusSessionForToday: Document exists. Updating document.");
-          transaction.update(dailyDocRef, {
-            'totalSecondsForDay': FieldValue.increment(secondsSpend),
-            'sessions': FieldValue.arrayUnion([sessionData]), // Add the new session to the array
-          });
-          print("[DEBUG] addFocusSessionForToday: Update operation performed.");
-        }
-        print("[DEBUG] addFocusSessionForToday: Transaction logic complete.");
-        print("Focus session added/updated successfully for $todayDocId!");
-      });
-      */
     } catch (e) {
-      print("[DEBUG] addFocusSessionForToday: CAUGHT EXCEPTION: $e");
       // Re-throw the error so it propagates to the Flutter error handling*
       rethrow;
     }

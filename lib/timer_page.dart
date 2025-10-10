@@ -38,7 +38,7 @@ class _TimerPageState extends State<TimerPage> {
                     alignment: Alignment.center,
                     width: 250,
                     height: 250,
-                    child: SizedBox.expand(
+                      child: SizedBox.expand(
                       child: CircularProgressIndicator(
                         value: timerModel.progress,
                         strokeWidth: 24,
@@ -60,18 +60,20 @@ class _TimerPageState extends State<TimerPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: timerModel.stopTimer, 
-                  style: timerModel.focusButtons,
-                  child: const Icon(MoreIconsApp.pause),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                ElevatedButton(
-                  onPressed: timerModel.startTimer, 
-                  style: timerModel.focusButtons,
-                  child: const Icon(MoreIconsApp.play, size: 30)
+                IndexedStack(
+                  index: timerModel.focusSessionRunning ? 1 : 0,
+                  children: [
+                    ElevatedButton(
+                      onPressed: timerModel.startTimer, 
+                      style: timerModel.focusButtons,
+                      child: const Icon(MoreIconsApp.play, size: 30)
+                    ),
+                    ElevatedButton(
+                      onPressed: timerModel.stopTimer, 
+                      style: timerModel.focusButtons,
+                      child: const Icon(MoreIconsApp.pause, size: 30)
+                    ),
+                  ],
                 ),
                 SizedBox(
                   width: 10,
@@ -80,6 +82,30 @@ class _TimerPageState extends State<TimerPage> {
                   onPressed: timerModel.resetTimer,
                   style: timerModel.focusButtons,
                   child: const Icon(MoreIconsApp.ccw),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            DropdownButton(
+              icon: const Icon(MoreIconsApp.tag),
+              style: timerModel.whiteTextStyle,
+              focusColor: const Color.fromARGB(0, 255, 255, 255),
+              value: timerModel.tag,
+              onChanged: (timerModel.focusSessionRunning) ? null : (String? newValue) {
+                setState(() {
+                  timerModel.tag = newValue!;
+                });
+              },
+              items: const [
+                DropdownMenuItem(
+                  value: 'Study',
+                  child: Text('Study'),
+                ),
+                DropdownMenuItem(
+                  value: 'Development',
+                  child: Text('Development'),
                 ),
               ],
             ),
