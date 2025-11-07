@@ -183,16 +183,18 @@ class TimerModel extends ChangeNotifier{
     secondsLeft = startMinutes * 60;
     notifyListeners();
   }
-  void timeForBreak(bool short) {
-    if (short) {
+  void timeForBreak(bool shortBreak) {
+    if (shortBreak) {
       state = 1;
       secondsLeft = timerBreakMinutes.round() * 60;
+      changeTime(timerBreakMinutes.round());
       showNotification("Time for short break");
     }
     else {
       state = 2;
       secondsLeft = timerLongBreakMinutes.round() * 60;
-    showNotification("Time for long break");
+      changeTime(timerLongBreakMinutes.round());
+      showNotification("Time for long break");
     }
     notifyListeners();
   }
@@ -200,6 +202,7 @@ class TimerModel extends ChangeNotifier{
     state = 0;
     currentRound++;
     secondsLeft = timerFocusMinutes.round() * 60;
+    changeTime(timerFocusMinutes.round());
     showNotification("Time to Focus");
     notifyListeners();
   }
@@ -228,6 +231,7 @@ class TimerModel extends ChangeNotifier{
   @override
   void dispose() {
     timer?.cancel();
+    addFocusSession(secondsSpendSoFar, tag);
     super.dispose();
   }
 }

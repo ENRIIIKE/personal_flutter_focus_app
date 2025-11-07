@@ -27,9 +27,9 @@ class _SettingsPageState extends State<SettingsPage> {
               width: 300,
               child: SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledThumbColor: timerModel.interactableColor.withAlpha(30),
+                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledThumbColor: timerModel.interactableColor.withAlpha(60),
                 ),
                 child: Slider(
                   value: timerModel.timerFocusMinutes,
@@ -58,9 +58,9 @@ class _SettingsPageState extends State<SettingsPage> {
               width: 300,
               child:SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledThumbColor: timerModel.interactableColor.withAlpha(30),
+                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledThumbColor: timerModel.interactableColor.withAlpha(60),
                 ),
                 child: Slider(
                 value: timerModel.amountOfRounds.roundToDouble(),
@@ -88,9 +88,9 @@ class _SettingsPageState extends State<SettingsPage> {
               width: 300,
               child:SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledThumbColor: timerModel.interactableColor.withAlpha(30),
+                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledThumbColor: timerModel.interactableColor.withAlpha(60),
                 ),
                 child: Slider(
                 value: timerModel.timerBreakMinutes.roundToDouble(),
@@ -118,9 +118,9 @@ class _SettingsPageState extends State<SettingsPage> {
               width: 300,
               child:SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(30),
-                  disabledThumbColor: timerModel.interactableColor.withAlpha(30),
+                  disabledActiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledInactiveTrackColor: timerModel.interactableColor.withAlpha(60),
+                  disabledThumbColor: timerModel.interactableColor.withAlpha(60),
                 ),
                 child: Slider(
                 value: timerModel.timerLongBreakMinutes.roundToDouble(),

@@ -39,7 +39,7 @@ class DailyFocusRepository {
       await dailyDocRef.set(
         {
           //'date': _getStartOfDayTimestamp(),
-          'totalSecondsForDay': secondsSpend,
+          'totalSecondsForDay': FieldValue.increment(secondsSpend),
           'sessions': FieldValue.arrayUnion([sessionData]), // Use arrayUnion to add to array
         },
         SetOptions(merge: true), // Use merge to avoid overwriting existing data
@@ -50,7 +50,6 @@ class DailyFocusRepository {
     }
   }
 
-  // You might also want a method to retrieve all sessions for a day
   Stream<List<FocusSession>> getTodayFocusSessions() {
     final String todayDocId = _getTodayDocumentId();
     return _firestore.collection('daily_focus_data').doc(todayDocId).snapshots().map((snapshot) {

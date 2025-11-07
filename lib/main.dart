@@ -120,6 +120,7 @@ class _FocusTimerState extends State<FocusTimer> {
               NavigationRailDestination(
                 icon: const Icon(MoreIconsApp.chart_bar),
                 label: const Text('Data'),
+                disabled: true,
               ),
             ],
           ),
